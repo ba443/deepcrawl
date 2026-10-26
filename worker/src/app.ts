@@ -7,6 +7,7 @@ import createHonoApp from '@/lib/hono/create-hono-app';
 import { openAPIHandler } from '@/lib/openapi/openapi.handler';
 import { rpcHandler } from '@/lib/orpc/rpc.handler';
 import { createMcpServer } from '@/mcp/server';
+import oauth from '@/oauth/oauth';
 
 // Preload heavy modules during worker initialization to reduce cold start time
 import '@/services/scrape/scrape.service';
@@ -63,6 +64,9 @@ app.use('/rpc/*', async (c, next) => {
 
   await next();
 });
+
+// OAuth for MCP clients (discovery, registration, authorize, token).
+app.route('/', oauth);
 
 // MCP (Streamable HTTP, stateless). Auth runs in the global middleware chain.
 app.all('/mcp', async (c) => {

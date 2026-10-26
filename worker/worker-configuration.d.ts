@@ -23,6 +23,7 @@ declare namespace Cloudflare {
 		BETTER_AUTH_SECRET: string;
 		DATABASE_URL: string;
 		JWT_SECRET: string;
+		MCP_OAUTH_PASSWORD: string;
 		GITHUB_CLIENT_SECRET: string;
 		GOOGLE_CLIENT_SECRET: string;
 		RESEND_API_KEY: string;
@@ -37,6 +38,7 @@ declare namespace Cloudflare {
 		BETTER_AUTH_SECRET: string;
 		DATABASE_URL: string;
 		JWT_SECRET: string;
+		MCP_OAUTH_PASSWORD: string;
 		GITHUB_CLIENT_SECRET: string;
 		GOOGLE_CLIENT_SECRET: string;
 		RESEND_API_KEY: string;
@@ -67,7 +69,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "NEXT_PUBLIC_APP_URL" | "BETTER_AUTH_URL" | "AUTH_MODE" | "API_URL" | "ENABLE_ACTIVITY_LOGS" | "WORKER_NODE_ENV" | "GITHUB_CLIENT_ID" | "NEXT_PUBLIC_GOOGLE_CLIENT_ID" | "JWT_ISSUER" | "JWT_AUDIENCE" | "ENABLE_API_RATE_LIMIT" | "BETTER_AUTH_SECRET" | "DATABASE_URL" | "JWT_SECRET" | "GITHUB_CLIENT_SECRET" | "GOOGLE_CLIENT_SECRET" | "RESEND_API_KEY" | "UPSTASH_REDIS_REST_URL" | "UPSTASH_REDIS_REST_TOKEN" | "CLOUDFLARE_ACCOUNT_ID" | "CLOUDFLARE_DATABASE_ID" | "CLOUDFLARE_D1_TOKEN">> {}
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "NEXT_PUBLIC_APP_URL" | "BETTER_AUTH_URL" | "AUTH_MODE" | "API_URL" | "ENABLE_ACTIVITY_LOGS" | "WORKER_NODE_ENV" | "GITHUB_CLIENT_ID" | "NEXT_PUBLIC_GOOGLE_CLIENT_ID" | "JWT_ISSUER" | "JWT_AUDIENCE" | "ENABLE_API_RATE_LIMIT" | "BETTER_AUTH_SECRET" | "DATABASE_URL" | "JWT_SECRET" | "MCP_OAUTH_PASSWORD" | "GITHUB_CLIENT_SECRET" | "GOOGLE_CLIENT_SECRET" | "RESEND_API_KEY" | "UPSTASH_REDIS_REST_URL" | "UPSTASH_REDIS_REST_TOKEN" | "CLOUDFLARE_ACCOUNT_ID" | "CLOUDFLARE_DATABASE_ID" | "CLOUDFLARE_D1_TOKEN">> {}
 }
 
 // Begin runtime types

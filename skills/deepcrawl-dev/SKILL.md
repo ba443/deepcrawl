@@ -29,7 +29,7 @@ Commands live in `package.json` scripts. This file holds what they don't say.
 Use the root scripts (`pnpm deploy`, `pnpm migrate`). `wrangler.jsonc` has no `env.production`, so the `deploy` script inside `worker/` fails against it.
 
 - `pnpm build` is a dry-run bundle; run it before `pnpm deploy`.
-- `AUTH_MODE=jwt`. `JWT_SECRET` is a Wrangler secret (`wrangler secret put JWT_SECRET` from `worker/`), never committed. `worker/.dev.vars.example` lists secret names only.
+- `AUTH_MODE=jwt`. `JWT_SECRET` is a Wrangler secret (`wrangler secret put JWT_SECRET` from `worker/`), never committed. `MCP_OAUTH_PASSWORD` (24+ characters) gates the MCP OAuth consent page and is set the same way; without it `/oauth/authorize` returns 503. `worker/.dev.vars.example` lists secret names only.
 - `pnpm migrate` needs `CLOUDFLARE_API_TOKEN` and applies to the remote D1 `DB_V0`.
 
 ## Stale docs

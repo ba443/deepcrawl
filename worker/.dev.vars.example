@@ -13,6 +13,9 @@ DATABASE_URL=
 # JWT secret used by the API worker when AUTH_MODE=jwt.
 JWT_SECRET=
 
+# Password for the MCP OAuth consent page (/oauth/authorize). At least 24 characters.
+MCP_OAUTH_PASSWORD=
+
 # OAuth
 # GitHub OAuth client secret.
 GITHUB_CLIENT_SECRET=

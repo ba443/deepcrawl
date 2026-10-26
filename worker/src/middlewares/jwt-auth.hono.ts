@@ -1,7 +1,8 @@
 import type { Session } from '@deepcrawl/auth/types';
 import { createMiddleware } from 'hono/factory';
 import { verify } from 'hono/jwt';
-import type { AppBindings } from '@/lib/context';
+import type { AppBindings, AppContext } from '@/lib/context';
+import { isOAuthPublicPath } from '@/oauth/oauth';
 import { resolveAuthMode } from '@/utils/auth-mode';
 import { logDebug, logError, logWarn } from '@/utils/loggers';
 
@@ -29,6 +30,16 @@ const getBearerToken = (authHeader?: string | null) => {
   }
 
   return token;
+};
+
+/** Points MCP clients at the OAuth metadata so they can start the flow. */
+const unauthorized = (c: AppContext) => {
+  const origin = new URL(c.req.url).origin;
+  c.header(
+    'WWW-Authenticate',
+    `Bearer resource_metadata="${origin}/.well-known/oauth-protected-resource"`,
+  );
+  return c.json({ error: 'Unauthorized' }, 401);
 };
 
 const resolveJwtSession = (
@@ -96,6 +107,11 @@ export const jwtAuthMiddleware = createMiddleware<AppBindings>(
       return next();
     }
 
+    // OAuth discovery and token endpoints must be reachable without a token.
+    if (isOAuthPublicPath(c.req.path)) {
+      return next();
+    }
+
     if (c.get('session')) {
       logDebug('✅ Skipping [jwtAuthMiddleware] Session found');
       return next();
@@ -104,13 +120,13 @@ export const jwtAuthMiddleware = createMiddleware<AppBindings>(
     const secret = c.env.JWT_SECRET;
     if (!secret) {
       logError('❌ JWT_SECRET is missing while AUTH_MODE=jwt');
-      return c.json({ error: 'Unauthorized' }, 401);
+      return unauthorized(c);
     }
 
     const token = getBearerToken(c.req.header('authorization'));
     if (!token) {
       logWarn('🚨 Missing Authorization Bearer token');
-      return c.json({ error: 'Unauthorized' }, 401);
+      return unauthorized(c);
     }
 
     try {
@@ -127,7 +143,7 @@ export const jwtAuthMiddleware = createMiddleware<AppBindings>(
 
       if (!session) {
         logWarn('🚨 Invalid JWT payload: missing sub claim');
-        return c.json({ error: 'Unauthorized' }, 401);
+        return unauthorized(c);
       }
 
       c.set('session', session);
@@ -138,7 +154,7 @@ export const jwtAuthMiddleware = createMiddleware<AppBindings>(
       });
     } catch (error) {
       logWarn('🚨 JWT verification failed:', error);
-      return c.json({ error: 'Unauthorized' }, 401);
+      return unauthorized(c);
     }
 
     return next();
